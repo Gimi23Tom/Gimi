@@ -40,22 +40,38 @@
         }
         .item-name {
             font-weight: bold;
+            margin-bottom: 5px;
         }
         .item-price {
             color: green;
             margin-left: 10px;
         }
-        .remove-button {
-            background-color: #f44336; /* צבע אדום */
+        .remove-button, .update-button {
+            background-color: #f44336; /* אדום להסרה */
             color: white;
             border: none;
             padding: 8px 12px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 0.9em;
+            margin-left: 5px;
+        }
+        .update-button {
+            background-color: #008CBA; /* כחול לעדכון */
         }
         .remove-button:hover {
             background-color: #d32f2f;
+        }
+        .update-button:hover {
+            background-color: #005f7a;
+        }
+        .item-quantity {
+            width: 50px;
+            padding: 5px;
+            margin-left: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            text-align: center;
         }
         #cart-total {
             margin-top: 20px;
@@ -98,6 +114,19 @@
             displayCartItems(); // עדכון התצוגה
         }
 
+        // פונקציה לעדכון כמות פריט בסל
+        function updateItemQuantity(index, quantity) {
+            let cart = getCart();
+            if (quantity > 0) {
+                cart[index].quantity = parseInt(quantity);
+            } else {
+                // אם הכמות היא 0 או פחות, נסיר את הפריט
+                cart.splice(index, 1);
+            }
+            saveCart(cart); // שמירת הסל המעודכן
+            displayCartItems(); // עדכון התצוגה
+        }
+
         // פונקציה להצגת פריטי הסל
         function displayCartItems() {
             const cart = getCart();
@@ -118,16 +147,29 @@
                 itemDetailsDiv.classList.add('item-details');
                 itemDetailsDiv.innerHTML = `<span class="item-name">${item.name} ${item.option ? `(${item.option})` : ''}</span><span class="item-price">${item.price} ש"ח</span>`;
 
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'number';
+                quantityInput.classList.add('item-quantity');
+                quantityInput.value = item.quantity || 1; // ברירת מחדל היא 1
+                quantityInput.min = 1;
+
+                const updateButton = document.createElement('button');
+                updateButton.classList.add('update-button');
+                updateButton.textContent = 'עדכן';
+                updateButton.onclick = () => updateItemQuantity(index, quantityInput.value);
+
                 const removeButton = document.createElement('button');
                 removeButton.classList.add('remove-button');
                 removeButton.textContent = 'הסר';
-                removeButton.onclick = () => removeItem(index); // קריאה לפונקציה removeItem עם האינדקס של הפריט
+                removeButton.onclick = () => removeItem(index);
 
                 cartItemDiv.appendChild(itemDetailsDiv);
+                cartItemDiv.appendChild(quantityInput);
+                cartItemDiv.appendChild(updateButton);
                 cartItemDiv.appendChild(removeButton);
                 cartItemsContainer.appendChild(cartItemDiv);
 
-                total += item.price;
+                total += (item.price * (item.quantity || 1));
             });
 
             cartTotalElement.textContent = `סה"כ: ${total} ש"ח`;
