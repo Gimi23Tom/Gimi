@@ -195,6 +195,11 @@
         const cartActionsContainer = document.getElementById('cart-actions');
         const cartItemsContainer = document.getElementById('cart-items-container');
         const cartTotalElement = document.getElementById('cart-total');
+        const fullNameInput = document.getElementById('fullName');
+        const addressInput = document.getElementById('address');
+        const cityInput = document.getElementById('city');
+        const zipCodeInput = document.getElementById('zipCode');
+        const phoneInput = document.getElementById('phone');
 
         // פונקציה לשליפת סל הקניות מ-localStorage
         function getCart() {
@@ -237,11 +242,11 @@
         // פונקציה לביצוע ההזמנה (כרגע רק להדגמה)
         function checkout() {
             const cart = getCart();
-            const fullName = document.getElementById('fullName').value;
-            const address = document.getElementById('address').value;
-            const city = document.getElementById('city').value;
-            const zipCode = document.getElementById('zipCode').value;
-            const phone = document.getElementById('phone').value;
+            const fullName = fullNameInput.value;
+            const address = addressInput.value;
+            const city = cityInput.value;
+            const zipCode = zipCodeInput.value;
+            const phone = phoneInput.value;
             let total = 0;
             cart.forEach(item => {
                 total += (item.price * (item.quantity || 1));
@@ -263,6 +268,12 @@
                 alert(`ההזמנה בוצעה בהצלחה!\nסך הכל: ${total} ש"ח\nשם: ${fullName}\nכתובת: ${address}, ${city}`);
                 localStorage.removeItem('cart'); // נקה את הסל לאחר ביצוע ההזמנה (לצורך הדגמה)
                 displayCartItems(); // עדכן את תצוגת הסל
+                // איפוס שדות הטופס
+                fullNameInput.value = '';
+                addressInput.value = '';
+                cityInput.value = '';
+                zipCodeInput.value = '';
+                phoneInput.value = '';
             } else {
                 alert("אנא מלאו את פרטי המשלוח והוסיפו פריטים לסל לפני ביצוע ההזמנה.");
             }
