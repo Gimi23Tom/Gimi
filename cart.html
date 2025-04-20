@@ -28,6 +28,7 @@
             padding: 20px;
             width: 80%;
             max-width: 600px;
+            margin-bottom: 20px;
         }
         .cart-item {
             display: flex;
@@ -51,7 +52,7 @@
             color: green;
             margin-left: 10px;
         }
-        .remove-button, .update-button, .clear-cart-button {
+        .remove-button, .update-button, .clear-cart-button, #checkout-button {
             background-color: #f44336; /* אדום להסרה */
             color: white;
             border: none;
@@ -67,6 +68,12 @@
         .clear-cart-button {
             background-color: #ff9800; /* כתום לרוקן */
         }
+        #checkout-button {
+            background-color: #4CAF50; /* ירוק לתשלום */
+            font-size: 1em;
+            padding: 10px 15px;
+            margin-top: 20px;
+        }
         .remove-button:hover {
             background-color: #d32f2f;
         }
@@ -75,6 +82,9 @@
         }
         .clear-cart-button:hover {
             background-color: #e65100;
+        }
+        #checkout-button:hover {
+            background-color: #45a049;
         }
         .item-quantity {
             width: 50px;
@@ -88,9 +98,39 @@
             margin-top: 20px;
             font-weight: bold;
             font-size: 1.2em;
+            margin-bottom: 20px;
         }
         .back-link {
             margin-top: 20px;
+        }
+        #shipping-info {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        #shipping-info h2 {
+            color: #333;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -103,6 +143,32 @@
         <p>סל הקניות ריק.</p>
     </div>
     <div id="cart-total"></div>
+
+    <div id="shipping-info">
+        <h2>פרטי משלוח</h2>
+        <div class="form-group">
+            <label for="fullName">שם מלא:</label>
+            <input type="text" id="fullName" name="fullName" required>
+        </div>
+        <div class="form-group">
+            <label for="address">כתובת:</label>
+            <input type="text" id="address" name="address" required>
+        </div>
+        <div class="form-group">
+            <label for="city">עיר:</label>
+            <input type="text" id="city" name="city" required>
+        </div>
+        <div class="form-group">
+            <label for="zipCode">מיקוד:</label>
+            <input type="text" id="zipCode" name="zipCode">
+        </div>
+        <div class="form-group">
+            <label for="phone">טלפון:</label>
+            <input type="tel" id="phone" name="phone" required>
+        </div>
+        <button id="checkout-button" onclick="checkout()">בצע הזמנה</button>
+    </div>
+
     <p class="back-link"><a href="index.html">חזרה לתפריט</a></p>
 
     <script>
@@ -146,6 +212,40 @@
         function clearCart() {
             localStorage.removeItem('cart'); // הסרת מפתח 'cart' מ-localStorage
             displayCartItems(); // עדכון התצוגה (הסל יהיה ריק)
+        }
+
+        // פונקציה לביצוע ההזמנה (כרגע רק להדגמה)
+        function checkout() {
+            const cart = getCart();
+            const fullName = document.getElementById('fullName').value;
+            const address = document.getElementById('address').value;
+            const city = document.getElementById('city').value;
+            const zipCode = document.getElementById('zipCode').value;
+            const phone = document.getElementById('phone').value;
+            let total = 0;
+            cart.forEach(item => {
+                total += (item.price * (item.quantity || 1));
+            });
+
+            if (cart.length > 0 && fullName && address && city && phone) {
+                const orderDetails = {
+                    items: cart,
+                    shippingInfo: {
+                        fullName: fullName,
+                        address: address,
+                        city: city,
+                        zipCode: zipCode,
+                        phone: phone
+                    },
+                    total: total
+                };
+                console.log("פרטי ההזמנה:", orderDetails);
+                alert(`ההזמנה בוצעה בהצלחה!\nסך הכל: ${total} ש"ח\nשם: ${fullName}\nכתובת: ${address}, ${city}`);
+                localStorage.removeItem('cart'); // נקה את הסל לאחר ביצוע ההזמנה (לצורך הדגמה)
+                displayCartItems(); // עדכן את תצוגת הסל
+            } else {
+                alert("אנא מלאו את פרטי המשלוח והוסיפו פריטים לסל לפני ביצוע ההזמנה.");
+            }
         }
 
         // פונקציה להצגת פריטי הסל
