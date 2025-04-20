@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סל קניות</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #cart-items-container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .item-details {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        .item-name {
+            font-weight: bold;
+        }
+        .item-price {
+            color: green;
+            margin-left: 10px;
+        }
+        .remove-button {
+            background-color: #f44336; /* צבע אדום */
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .remove-button:hover {
+            background-color: #d32f2f;
+        }
+        #cart-total {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .back-link {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>סל קניות</h1>
+    <div id="cart-items-container">
+        <p>סל הקניות ריק.</p>
+    </div>
+    <div id="cart-total"></div>
+    <p class="back-link"><a href="index.html">חזרה לתפריט</a></p>
+
+    <script>
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const cartTotalElement = document.getElementById('cart-total');
+
+        // פונקציה לשליפת סל הקניות מ-localStorage
+        function getCart() {
+            const cartData = localStorage.getItem('cart');
+            return cartData ? JSON.parse(cartData) : [];
+        }
+
+        // פונקציה לשמירת סל הקניות ב-localStorage
+        function saveCart(cart) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // פונקציה להסרת פריט מהסל
+        function removeItem(index) {
+            let cart = getCart();
+            cart.splice(index, 1); // הסרת פריט אחד מהאינדקס שצוין
+            saveCart(cart); // שמירת הסל המעודכן
+            displayCartItems(); // עדכון התצוגה
+        }
+
+        // פונקציה להצגת פריטי הסל
+        function displayCartItems() {
+            const cart = getCart();
+            cartItemsContainer.innerHTML = ''; // נקה את התוכן הקודם
+
+            if (cart.length === 0) {
+                cartItemsContainer.textContent = 'סל הקניות ריק.';
+                cartTotalElement.textContent = '';
+                return;
+            }
+
+            let total = 0;
+            cart.forEach((item, index) => {
+                const cartItemDiv = document.createElement('div');
+                cartItemDiv.classList.add('cart-item');
+
+                const itemDetailsDiv = document.createElement('div');
+                itemDetailsDiv.classList.add('item-details');
+                itemDetailsDiv.innerHTML = `<span class="item-name">${item.name} ${item.option ? `(${item.option})` : ''}</span><span class="item-price">${item.price} ש"ח</span>`;
+
+                const removeButton = document.createElement('button');
+                removeButton.classList.add('remove-button');
+                removeButton.textContent = 'הסר';
+                removeButton.onclick = () => removeItem(index); // קריאה לפונקציה removeItem עם האינדקס של הפריט
+
+                cartItemDiv.appendChild(itemDetailsDiv);
+                cartItemDiv.appendChild(removeButton);
+                cartItemsContainer.appendChild(cartItemDiv);
+
+                total += item.price;
+            });
+
+            cartTotalElement.textContent = `סה"כ: ${total} ש"ח`;
+        }
+
+        // טען והצג את פריטי הסל בעת טעינת העמוד
+        displayCartItems();
+    </script>
+</body>
+</html>

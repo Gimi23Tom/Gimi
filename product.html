@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פרטי מוצר</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .product-details-container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .product-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+        .product-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .product-price {
+            color: green;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .product-description {
+            margin-bottom: 10px;
+        }
+        .back-link {
+            margin-top: 20px;
+        }
+        .choice-form {
+            margin-top: 15px;
+        }
+        .choice-label {
+            margin-right: 10px;
+        }
+        .choice-select {
+            padding: 5px;
+        }
+        .add-to-cart-button {
+            background-color: #4CAF50; /* צבע ירוק */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+        }
+        .add-to-cart-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>פרטי מוצר</h1>
+    <div id="product-details-container">
+        <p>טוען פרטי מוצר...</p>
+    </div>
+    <button class="add-to-cart-button" onclick="addToCart()">הוספה לסל</button>
+    <p class="back-link"><a href="index.html">חזרה לתפריט</a></p>
+
+    <script>
+        const productDetailsContainer = document.getElementById('product-details-container');
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        // מבנה נתוני התפריט (אותו מבנה כמו בקובץ index.html)
+        const menu = {
+            "ארוחות": [
+                {
+                    "id": "hamburger",
+                    "שם": "המבורגר אנטריקוט",
+                    "מחיר": 35,
+                    "תמונה": "https://did.li/znsx5",
+                    "תיאור": "המבורגר עסיסי מבשר אנטריקוט מובחר."
+                },
+                {
+                    "id": "hotdog",
+                    "שם": "נקניקיה בלחמניה",
+                    "מחיר": 10,
+                    "תמונה": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9EU52dNVazyJHYLGcpFGUyTV1e7je-k0bzw&s",
+                    "תיאור": "נקניקיה טעימה בלחמניה רכה עם תוספות לבחירה."
+                }
+            ],
+            "תוספות": [
+                {
+                    "id": "fries",
+                    "שם": "צ'יפס",
+                    "מחיר": 7,
+                    "תמונה": "https://i.postimg.cc/4yzwtRMR/1010010220.png",
+                    "תיאור": "צ'יפס זהוב וקריספי."
+                },
+                {
+                    "id": "onionrings",
+                    "שם": "טבעות בצל",
+                    "מחיר": 7,
+                    "תמונה": "https://sarig.com/app/uploads/2024/12/onion-rings.webp",
+                    "תיאור": "טבעות בצל פריכות בציפוי טעים."
+                },
+                {
+                    "id": "mashedpotatoes",
+                    "שם": "כדורי פירה",
+                    "מחיר": 7,
+                    "תמונה": "https://2.a7.org/files/pictures/000/1143821.jpg",
+                    "תיאור": "כדורי פירה רכים ועשירים."
+                },
+                {
+                    "id": "mixedsalad",
+                    "שם": "מיקס של כל התוספות",
+                    "מחיר": 9,
+                    "תמונה": "https://i.ibb.co/Xr9mtwL6/Gemini-Generated-Image-bhelkjbhelkjbhel.jpg",
+                    "תיאור": "מבחר של כל התוספות שלנו בצלחת אחת."
+                }
+            ],
+            "שתייה": [
+                {
+                    "id": "juice",
+                    "שם": "מיץ",
+                    "מחיר": 6,
+                    "תמונה": "https://coffeco.co.il/wp-content/uploads/2023/04/47.png",
+                    "תיאור": "מיץ טבעי במגוון טעמים.",
+                    "אפשרויות": ["קולה", "מיץ תפוזים", "פאנטא", "ספרייט", "פיוזטי", "מיץ ענבים"]
+                },
+                {
+                    "id": "water",
+                    "שם": "מים",
+                    "מחיר": 5,
+                    "תמונה": "https://www.ewines.co.il/cdn/shop/files/D7_91_D7_A7-_D7_9E_D7_99_D7_9D.jpg?v=1725876583",
+                    "תיאור": "בקבוק מים מינרליים קרים."
+                },
+                {
+                    "id": "slush",
+                    "שם": "ברד",
+                    "מחיר": 5,
+                    "תמונה": "https://techno-ice.co.il/wp-content/uploads/2022/07/SlushieMachineGuide.com_-300x300.png",
+                    "תיאור": "משקה ברד מרענן במגוון טעמים."
+                },
+                {
+                    "id": "tropit",
+                    "שם": "טרופית",
+                    "מחיר": 4,
+                    "תמונה": "https://www.hula.co.il/wp-content/uploads/2021/01/WhatsApp_Image_2022-01-17_at_10.03.00_AM-removebg-preview.png",
+                    "תיאור": "משקה טרופית קלאסי."
+                }
+            ]
+        };
+
+        // סל הקניות (כרגע נטען מ-localStorage או ריק)
+        let cart = getCart();
+
+        // פונקציה לשליפת סל הקניות מ-localStorage
+        function getCart() {
+            const cartData = localStorage.getItem('cart');
+            return cartData ? JSON.parse(cartData) : [];
+        }
+
+        // פונקציה לשמירת סל הקניות ב-localStorage
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // פונקציה למציאת מוצר לפי ID
+        function findProductById(id) {
+            for (const category in menu) {
+                const product = menu[category].find(p => p.id === id);
+                if (product) {
+                    return product;
+                }
+            }
+            return null;
+        }
+
+        // פונקציה להוספת מוצר לסל
+        function addToCart() {
+            const product = findProductById(productId);
+            if (product) {
+                let selectedOption = null;
+                if (product.id === "juice") {
+                    const juiceChoice = document.getElementById("juice-choice");
+                    if (juiceChoice) {
+                        selectedOption = juiceChoice.value;
+                    }
+                }
+
+                const itemToAdd = {
+                    id: product.id,
+                    name: product.שם,
+                    price: product.מחיר,
+                    option: selectedOption // יכול להיות null אם אין אפשרות בחירה
+                };
+                cart.push(itemToAdd);
+                saveCart(); // שמור את הסל לאחר הוספה
+                console.log("המוצר נוסף לסל:", cart);
+                alert(`${product.שם}${selectedOption ? ` (${selectedOption})` : ''} נוסף לסל!`);
+            }
+        }
+
+        // הצגת פרטי המוצר
+        const product = findProductById(productId);
+
+        if (product) {
+            let productDetailsHTML = `
+                <img src="${product.תמונה}" alt="${product.שם}" class="product-image">
+                <h2 class="product-name">${product.שם}</h2>
+                <p class="product-price">מחיר: ${product.מחיר} ש"ח</p>
+                ${product.תיאור ? `<p class="product-description">${product.תיאור}</p>` : ''}
+            `;
+
+            // אם המוצר הוא "מיץ" וקיימות אפשרויות, נוסיף טופס בחירה
+            if (product.id === "juice" && product.אפשרויות && product.אפשרויות.length > 0) {
+                productDetailsHTML += `
+                    <form class="choice-form">
+                        <label for="juice-choice" class="choice-label">בחר סוג מיץ:</label>
+                        <select id="juice-choice" class="choice-select">
+                            ${product.אפשרויות.map(option => `<option value="${option}">${option}</option>`).join('')}
+                        </select>
+                    </form>
+                `;
+            }
+
+            productDetailsContainer.innerHTML = productDetailsHTML;
+
+        } else {
+            productDetailsContainer.textContent = "המוצר לא נמצא.";
+        }
+    </script>
+</body>
+</html>

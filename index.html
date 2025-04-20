@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תפריט העסק שלך</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+        h1 {
+            color: #333;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .cart-button {
+            background-color: #f8961e; /* צבע כתום */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .cart-button:hover {
+            background-color: #e07a00;
+        }
+        #menu-container {
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .category {
+            margin-bottom: 20px;
+        }
+        .product {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        .product:hover {
+            background-color: #eee;
+        }
+        .product-image {
+            width: 80px;
+            height: 80px;
+            margin-right: 10px;
+            border: 1px solid #eee;
+        }
+        .product-details {
+            flex-grow: 1;
+        }
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .product-price {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>ברוכים הבאים לתפריט שלנו!</h1>
+    <button class="cart-button" onclick="goToCart()">סל קניות</button>
+
+    <div id="menu-container">
+        </div>
+
+    <script>
+        console.log("קוד JavaScript התחיל לרוץ!");
+
+        const menuContainer = document.getElementById('menu-container');
+        console.log("אלמנט menu-container:", menuContainer);
+
+        const menu = {
+            "ארוחות": [
+                {
+                    "id": "hamburger",
+                    "שם": "המבורגר אנטריקוט",
+                    "מחיר": 35, // מחיר מעודכן
+                    "תמונה": "https://did.li/znsx5"
+                },
+                {
+                    "id": "hotdog",
+                    "שם": "נקניקיה בלחמניה",
+                    "מחיר": 10,
+                    "תמונה": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9EU52dNVazyJHYLGcpFGUyTV1e7je-k0bzw&s"
+                }
+            ],
+            "תוספות": [
+                {
+                    "id": "fries",
+                    "שם": "צ'יפס",
+                    "מחיר": 7,
+                    "תמונה": "https://i.postimg.cc/4yzwtRMR/1010010220.png"
+                },
+                {
+                    "id": "onionrings",
+                    "שם": "טבעות בצל",
+                    "מחיר": 7,
+                    "תמונה": "https://sarig.com/app/uploads/2024/12/onion-rings.webp"
+                },
+                {
+                    "id": "mashedpotatoes",
+                    "שם": "כדורי פירה",
+                    "מחיר": 7,
+                    "תמונה": "https://2.a7.org/files/pictures/000/1143821.jpg"
+                },
+                {
+                    "id": "mixedsalad",
+                    "שם": "מיקס של כל התוספות",
+                    "מחיר": 9, // מחיר מעודכן
+                    "תמונה": "https://i.ibb.co/Xr9mtwL6/Gemini-Generated-Image-bhelkjbhelkjbhel.jpg"
+                }
+            ],
+            "שתייה": [
+                {
+                    "id": "juice",
+                    "שם": "מיץ",
+                    "מחיר": 6,
+                    "תמונה": "https://coffeco.co.il/wp-content/uploads/2023/04/47.png",
+                    "אפשרויות": ["קולה", "מיץ תפוזים", "פאנטא", "ספרייט", "פיוזטי", "מיץ ענבים"]
+                },
+                {
+                    "id": "water",
+                    "שם": "מים",
+                    "מחיר": 5,
+                    "תמונה": "https://www.ewines.co.il/cdn/shop/files/D7_91_D7_A7-_D7_9E_D7_99_D7_9D.jpg?v=1725876583"
+                },
+                {
+                    "id": "slush",
+                    "שם": "ברד",
+                    "מחיר": 5,
+                    "תמונה": "https://techno-ice.co.il/wp-content/uploads/2022/07/SlushieMachineGuide.com_-300x300.png"
+                },
+                {
+                    "id": "tropit",
+                    "שם": "טרופית",
+                    "מחיר": 4,
+                    "תמונה": "https://www.hula.co.il/wp-content/uploads/2021/01/WhatsApp_Image_2022-01-17_at_10.03.00_AM-removebg-preview.png"
+                }
+            ]
+        };
+        console.log("מבנה התפריט:", menu);
+
+        for (const categoryName in menu) {
+            if (menu.hasOwnProperty(categoryName)) {
+                const category = menu[categoryName];
+                const categoryTitle = document.createElement('h2');
+                categoryTitle.textContent = categoryName;
+                menuContainer.appendChild(categoryTitle);
+
+                category.forEach(product => {
+                    const productDiv = document.createElement('a');
+                    productDiv.href = `product.html?id=${product.id}`;
+                    productDiv.classList.add('product');
+                    productDiv.style.textDecoration = 'none';
+                    productDiv.style.color = 'inherit';
+
+                    const image = document.createElement('img');
+                    image.src = product.תמונה;
+                    image.alt = product.שם;
+                    image.classList.add('product-image');
+                    productDiv.appendChild(image);
+
+                    const detailsDiv = document.createElement('div');
+                    detailsDiv.classList.add('product-details');
+
+                    const name = document.createElement('div');
+                    name.classList.add('product-name');
+                    name.textContent = product.שם;
+                    detailsDiv.appendChild(name);
+
+                    const price = document.createElement('div');
+                    price.classList.add('product-price');
+                    price.textContent = `מחיר: ${product.מחיר} ש"ח`;
+                    detailsDiv.appendChild(price);
+
+                    productDiv.appendChild(detailsDiv);
+                    menuContainer.appendChild(productDiv);
+                });
+            }
+        }
+
+        function goToCart() {
+            window.location.href = 'cart.html';
+        }
+    </script>
+</body>
+</html>
