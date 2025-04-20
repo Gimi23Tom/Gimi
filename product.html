@@ -201,7 +201,8 @@
                     id: product.id,
                     name: product.שם,
                     price: product.מחיר,
-                    option: selectedOption // יכול להיות null אם אין אפשרות בחירה
+                    option: selectedOption, // יכול להיות null אם אין אפשרות בחירה
+                    quantity: 1 // הוספת כמות ברירת מחדל
                 };
                 cart.push(itemToAdd);
                 saveCart(); // שמור את הסל לאחר הוספה
