@@ -267,13 +267,7 @@
                 console.log("פרטי ההזמנה:", orderDetails);
                 alert(`ההזמנה בוצעה בהצלחה!\nסך הכל: ${total} ש"ח\nשם: ${fullName}\nכתובת: ${address}, ${city}`);
                 localStorage.removeItem('cart'); // נקה את הסל לאחר ביצוע ההזמנה (לצורך הדגמה)
-                displayCartItems(); // עדכן את תצוגת הסל
-                // איפוס שדות הטופס
-                fullNameInput.value = '';
-                addressInput.value = '';
-                cityInput.value = '';
-                zipCodeInput.value = '';
-                phoneInput.value = '';
+                displayCartItems(); // עדכן את תצוגת הסל ופרטי המשלוח
             } else {
                 alert("אנא מלאו את פרטי המשלוח והוסיפו פריטים לסל לפני ביצוע ההזמנה.");
             }
@@ -287,6 +281,12 @@
             if (cart.length === 0) {
                 cartItemsContainer.textContent = 'סל הקניות ריק.';
                 cartTotalElement.textContent = '';
+                // אם הסל ריק, נקה את תיבות הטקסט של פרטי המשלוח
+                fullNameInput.value = '';
+                addressInput.value = '';
+                cityInput.value = '';
+                zipCodeInput.value = '';
+                phoneInput.value = '';
                 return;
             }
 
