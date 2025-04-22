@@ -8,8 +8,110 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
     <style>
-        /* ... (שאר הסגנונות CSS הקיימים) ... */
-        #payment-info {
+        body {
+            font-family: 'Fredoka', sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-family: 'Amatic SC', cursive;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+        #cart-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #cart-items-container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .item-details {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        .item-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .item-price {
+            color: green;
+            margin-left: 10px;
+        }
+        .remove-button, .update-button, .clear-cart-button, #checkout-button {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f44336; /* אדום להסרה */
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .update-button {
+            background-color: #008CBA; /* כחול לעדכון */
+        }
+        .clear-cart-button {
+            background-color: #ff9800; /* כתום לרוקן */
+        }
+        #checkout-button {
+            background-color: #4CAF50; /* ירוק לתשלום */
+            font-size: 1em;
+            padding: 10px 15px;
+            margin-top: 20px;
+        }
+        .remove-button:hover {
+            background-color: #d32f2f;
+        }
+        .update-button:hover {
+            background-color: #005f7a;
+        }
+        .clear-cart-button:hover {
+            background-color: #e65100;
+        }
+        #checkout-button:hover {
+            background-color: #45a049;
+        }
+        .item-quantity {
+            width: 50px;
+            padding: 5px;
+            margin-left: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            text-align: center;
+        }
+        #cart-total {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .back-link {
+            margin-top: 20px;
+        }
+        #shipping-info {
             background-color: #fff;
             border: 1px solid #ddd;
             padding: 20px;
@@ -18,7 +120,7 @@
             margin-bottom: 20px;
             text-align: right;
         }
-        #payment-info h2 {
+        #shipping-info h2 {
             font-family: 'Amatic SC', cursive;
             color: #333;
             border-bottom: 1px solid #ccc;
@@ -42,9 +144,21 @@
             border-radius: 4px;
             font-family: 'Fredoka', sans-serif;
         }
-        #checkout-button {
-            /* ... (סגנונות קיימים) ... */
-            margin-top: 20px;
+        .back-link a {
+            font-family: 'Fredoka', sans-serif;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        .payment-select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: 'Fredoka', sans-serif;
+            width: 100%;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -80,55 +194,128 @@
             <label for="phone">טלפון:</label>
             <input type="tel" id="phone" name="phone" required>
         </div>
-    </div>
 
-    <div id="payment-info">
         <h2>פרטי תשלום</h2>
         <div class="form-group">
-            <label for="cardNumber">מספר כרטיס אשראי:</label>
-            <input type="text" id="cardNumber" name="cardNumber" placeholder="XXXX-XXXX-XXXX-XXXX" required>
+            <label for="paymentMethod">אמצעי תשלום:</label>
+            <select id="paymentMethod" class="payment-select">
+                <option value="credit_card">כרטיס אשראי</option>
+                <option value="paypal">PayPal</option>
+                <option value="other">אחר</option>
+            </select>
         </div>
-        <div class="form-group">
-            <label for="expiryDate">תוקף:</label>
-            <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+        <div id="creditCardDetails" style="display: block;">
+            <div class="form-group">
+                <label for="cardNumber">מספר כרטיס:</label>
+                <input type="text" id="cardNumber" name="cardNumber" placeholder="XXXX-XXXX-XXXX-XXXX">
+            </div>
+            <div class="form-group">
+                <label for="expiryDate">תוקף:</label>
+                <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY">
+            </div>
+            <div class="form-group">
+                <label for="cvv">CVV:</label>
+                <input type="text" id="cvv" name="cvv" placeholder="XXX">
+            </div>
         </div>
-        <div class="form-group">
-            <label for="cvv">CVV:</label>
-            <input type="text" id="cvv" name="cvv" placeholder="XXX" required>
+        <div id="paypalDetails" style="display: none;">
+            <p>תועבר לאתר PayPal לאישור התשלום.</p>
         </div>
-        <div class="form-group">
-            <label for="cardholderName">שם בעל הכרטיס:</label>
-            <input type="text" id="cardholderName" name="cardholderName" required>
+        <div id="otherPaymentDetails" style="display: none;">
+            <label for="otherPayment">הערות לגבי תשלום:</label>
+            <textarea id="otherPayment" name="otherPayment" rows="3"></textarea>
         </div>
-    </div>
 
-    <button id="checkout-button" onclick="checkout()">בצע הזמנה</button>
+        <button id="checkout-button" onclick="checkout()">בצע הזמנה</button>
+    </div>
 
     <p class="back-link"><a href="index.html">חזרה לתפריט</a></p>
 
     <script>
-        // ... (שאר קוד ה-JavaScript הקיים) ...
+        const cartActionsContainer = document.getElementById('cart-actions');
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const cartTotalElement = document.getElementById('cart-total');
+        const fullNameInput = document.getElementById('fullName');
+        const addressInput = document.getElementById('address');
+        const cityInput = document.getElementById('city');
+        const zipCodeInput = document.getElementById('zipCode');
+        const phoneInput = document.getElementById('phone');
+        const paymentMethodSelect = document.getElementById('paymentMethod');
+        const creditCardDetailsDiv = document.getElementById('creditCardDetails');
+        const paypalDetailsDiv = document.getElementById('paypalDetails');
+        const otherPaymentDetailsDiv = document.getElementById('otherPaymentDetails');
 
-        // פונקציה לביצוע ההזמנה (מעודכנת לכלול פרטי תשלום - רק הדגמה)
+        paymentMethodSelect.addEventListener('change', function() {
+            creditCardDetailsDiv.style.display = 'none';
+            paypalDetailsDiv.style.display = 'none';
+            otherPaymentDetailsDiv.style.display = 'none';
+
+            if (this.value === 'credit_card') {
+                creditCardDetailsDiv.style.display = 'block';
+            } else if (this.value === 'paypal') {
+                paypalDetailsDiv.style.display = 'block';
+            } else if (this.value === 'other') {
+                otherPaymentDetailsDiv.style.display = 'block';
+            }
+        });
+
+        // פונקציה לשליפת סל הקניות מ-localStorage
+        function getCart() {
+            const cartData = localStorage.getItem('cart');
+            return cartData ? JSON.parse(cartData) : [];
+        }
+
+        // פונקציה לשמירת סל הקניות ב-localStorage
+        function saveCart(cart) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // פונקציה להסרת פריט מהסל
+        function removeItem(index) {
+            let cart = getCart();
+            cart.splice(index, 1); // הסרת פריט אחד מהאינדקס שצוין
+            saveCart(cart); // שמירת הסל המעודכן
+            displayCartItems(); // עדכון התצוגה
+        }
+
+        // פונקציה לעדכון כמות פריט בסל
+        function updateItemQuantity(index, quantity) {
+            let cart = getCart();
+            if (quantity > 0) {
+                cart[index].quantity = parseInt(quantity);
+            } else {
+                // אם הכמות היא 0 או פחות, נסיר את הפריט
+                cart.splice(index, 1);
+            }
+            saveCart(cart); // שמירת הסל המעודכן
+            displayCartItems(); // עדכון התצוגה
+        }
+
+        // פונקציה לריקון כל הסל
+        function clearCart() {
+            localStorage.removeItem('cart'); // הסרת מפתח 'cart' מ-localStorage
+            displayCartItems(); // עדכון התצוגה (הסל יהיה ריק)
+        }
+
+        // פונקציה לביצוע ההזמנה (כרגע רק להדגמה)
         function checkout() {
             const cart = getCart();
-            const fullName = document.getElementById('fullName').value;
-            const address = document.getElementById('address').value;
-            const city = document.getElementById('city').value;
-            const zipCode = document.getElementById('zipCode').value;
-            const phone = document.getElementById('phone').value;
-
-            const cardNumber = document.getElementById('cardNumber').value;
-            const expiryDate = document.getElementById('expiryDate').value;
-            const cvv = document.getElementById('cvv').value;
-            const cardholderName = document.getElementById('cardholderName').value;
-
+            const fullName = fullNameInput.value;
+            const address = addressInput.value;
+            const city = cityInput.value;
+            const zipCode = zipCodeInput.value;
+            const phone = phoneInput.value;
+            const paymentMethod = paymentMethodSelect.value;
+            let cardNumber = document.getElementById('cardNumber')?.value;
+            let expiryDate = document.getElementById('expiryDate')?.value;
+            let cvv = document.getElementById('cvv')?.value;
+            let otherPayment = document.getElementById('otherPayment')?.value;
             let total = 0;
             cart.forEach(item => {
                 total += (item.price * (item.quantity || 1));
             });
 
-            if (cart.length > 0 && fullName && address && city && phone && cardNumber && expiryDate && cvv && cardholderName) {
+            if (cart.length > 0 && fullName && address && city && phone && paymentMethod) {
                 const orderDetails = {
                     items: cart,
                     shippingInfo: {
@@ -139,24 +326,79 @@
                         phone: phone
                     },
                     paymentInfo: {
+                        method: paymentMethod,
                         cardNumber: cardNumber,
                         expiryDate: expiryDate,
                         cvv: cvv,
-                        cardholderName: cardholderName
+                        otherDetails: otherPayment
                     },
                     total: total
                 };
                 console.log("פרטי ההזמנה:", orderDetails);
-                alert(`ההזמנה בוצעה בהצלחה!\nסך הכל: ${total} ש"ח\nשם: ${fullName}\nכתובת: ${address}, ${city}\nפרטי תשלום: ****-****-****-${cardNumber.slice(-4)}`);
+                alert(`ההזמנה בוצעה בהצלחה!\nסך הכל: ${total} ש"ח\nשם: ${fullName}\nכתובת: ${address}, ${city}\nאמצעי תשלום: ${paymentMethod}`);
                 localStorage.removeItem('cart'); // נקה את הסל לאחר ביצוע ההזמנה (לצורך הדגמה)
-                displayCartItems(); // עדכן את תצוגת הסל
-                // כאן, ביישום אמיתי, הייתם שולחים את פרטי ההזמנה לשרת מאובטח ולשירות תשלומים
+                displayCartItems(); // עדכן את תצוגת הסל ופרטי המשלוח
             } else {
-                alert("אנא מלאו את כל פרטי המשלוח והתשלום והוסיפו פריטים לסל לפני ביצוע ההזמנה.");
+                alert("אנא מלאו את פרטי המשלוח והוסיפו פריטים לסל ובחרו אמצעי תשלום לפני ביצוע ההזמנה.");
             }
         }
 
-        // ... (שאר קוד ה-JavaScript הקיים) ...
+        // פונקציה להצגת פריטי הסל
+        function displayCartItems() {
+            const cart = getCart();
+            cartItemsContainer.innerHTML = ''; // נקה את התוכן הקודם
+
+            if (cart.length === 0) {
+                cartItemsContainer.textContent = 'סל הקניות ריק.';
+                cartTotalElement.textContent = '';
+                // אם הסל ריק, נקה את תיבות הטקסט של פרטי המשלוח
+                fullNameInput.value = '';
+                addressInput.value = '';
+                cityInput.value = '';
+                zipCodeInput.value = '';
+                phoneInput.value = '';
+                return;
+            }
+
+            let total = 0;
+            cart.forEach((item, index) => {
+                const cartItemDiv = document.createElement('div');
+                cartItemDiv.classList.add('cart-item');
+
+                const itemDetailsDiv = document.createElement('div');
+                itemDetailsDiv.classList.add('item-details');
+                itemDetailsDiv.innerHTML = `<span class="item-name">${item.name} ${item.option ? `(${item.option})` : ''}</span><span class="item-price">${item.price} ש"ח</span>`;
+
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'number';
+                quantityInput.classList.add('item-quantity');
+                quantityInput.value = item.quantity || 1; // ברירת מחדל היא 1
+                quantityInput.min = 1;
+
+                const updateButton = document.createElement('button');
+                updateButton.classList.add('update-button');
+                updateButton.textContent = 'עדכן';
+                updateButton.onclick = () => updateItemQuantity(index, quantityInput.value);
+
+                const removeButton = document.createElement('button');
+                removeButton.classList.add('remove-button');
+                removeButton.textContent = 'הסר';
+                removeButton.onclick = () => removeItem(index);
+
+                cartItemDiv.appendChild(itemDetailsDiv);
+                cartItemDiv.appendChild(quantityInput);
+                cartItemDiv.appendChild(updateButton);
+                cartItemDiv.appendChild(removeButton);
+                cartItemsContainer.appendChild(cartItemDiv);
+
+                total += (item.price * (item.quantity || 1));
+            });
+
+            cartTotalElement.textContent = `סה"כ: ${total} ש"ח`;
+        }
+
+        // טען והצג את פריטי הסל בעת טעינת העמוד
+        displayCartItems();
     </script>
 </body>
 </html>
